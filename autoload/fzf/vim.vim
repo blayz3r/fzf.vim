@@ -700,7 +700,7 @@ function! fzf#vim#ag(query, ...)
   let query = empty(a:query) ? '^(?=.)' : a:query
   let args = copy(a:000)
   let ag_opts = len(args) > 1 && type(args[0]) == s:TYPE.string ? remove(args, 0) : ''
-  let command = ag_opts . ' ' . fzf#shellescape(query)
+  let command = ag_opts . ' -- ' . fzf#shellescape(query)
   return call('fzf#vim#ag_raw', insert(args, command, 0))
 endfunction
 
@@ -1214,7 +1214,7 @@ function! fzf#vim#maps(mode, ...)
   let curr = ''
   for line in split(cout, "\n")
     if line =~ "^\t"
-      let src = '  '.join(reverse(reverse(split(split(line)[-1], '/'))[0:2]), '/')
+      let src = "\t".substitute(matchstr(line, '/\zs[^/\\]*\ze$'), ' [^ ]* ', ':', '')
       call add(list, printf('%s %s', curr, s:green(src, 'Comment')))
       let curr = ''
     else
